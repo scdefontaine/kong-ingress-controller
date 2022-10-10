@@ -309,7 +309,7 @@ proxy:
   ingress:
     # Enable/disable exposure using ingress.
     enabled: true
-    ingressClassName: nginx
+    ingressClassName: gcp
     # Ingress hostname
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
