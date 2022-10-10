@@ -20,7 +20,7 @@ before_script:
   allow_failure: false
   script:
     - >
-      helm upgrade -i -n $NAMESPACE -f values.yaml $APP kong/kong
+      helm upgrade -i -n $NAMESPACE $APP kong/kong
       --set ingressController.ingressClass=$INGRESS_CLASS
       --set ingressController.watchNamspaces={$NAMESPACE}
       --wait --debug
