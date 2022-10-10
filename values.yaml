@@ -308,12 +308,12 @@ proxy:
   # to expose Kong outside the k8s cluster.
   ingress:
     # Enable/disable exposure using ingress.
-    enabled: false
+    enabled: true
     ingressClassName: gcp
     # Ingress hostname
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    hostname: 
+    hostname: dev.seandefontaine.io
     # Map of ingress annotations.
     annotations: 
       konghq.com/strip-path: 'true'

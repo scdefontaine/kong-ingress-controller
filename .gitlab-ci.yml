@@ -23,6 +23,7 @@ before_script:
       helm upgrade -i -n $NAMESPACE -f values.yaml $APP kong/kong
       --set ingressController.ingressClass=$INGRESS_CLASS
       --set ingressController.watchNamspaces={$NAMESPACE}
+      --set proxy.ingress.hostname=$APP_HOST
       --wait --debug
 
 .cleanup: &cleanup
