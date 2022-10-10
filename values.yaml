@@ -317,6 +317,7 @@ proxy:
     # Map of ingress annotations.
     annotations: 
       konghq.com/strip-path: 'true'
+      kubernetes.io/ingress.class: "gce-internal"
 
     # Ingress path.
     path: /
@@ -511,8 +512,7 @@ ingressController:
 
   ingressClass: kong
   # annotations for IngressClass resource (Kubernetes 1.18+)
-  ingressClassAnnotations:
-    kubernetes.io/ingress.class: "gce-internal"
+  ingressClassAnnotations: {}
 
   ## Define any volumes and mounts you want present in the ingress controller container
   ## Volumes are defined above in deployment.userDefinedVolumes
