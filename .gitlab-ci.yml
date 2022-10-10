@@ -6,16 +6,17 @@ stages:
   - prod
   - stop-prod
 
+.variables: &variables
+  APP: $CI_PROJECT_NAME
+  DOMAIN_NAME: seandefontaine.io
+
 .deploy: &deploy
   tags:
     - gitlab-runner
   allow_failure: false
-  variables:
-    APP: $CI_PROJECT_NAME
-    DOMAIN_NAME: seandefontaine.io
   script:
     - >
-      helm upgrade -i $APP kong/kong -n $NAMESPACE -f values.yaml
+      helm upgrade -i -n $NAMESPACE -f values.yaml $APP kong/kong
       --set ingressController.ingressClass=kong-dev
       --set ingressController.watchNamspaces={$NAMESPACE}
       --set proxy.ingress.hostname=$APP_HOST
@@ -26,8 +27,6 @@ stages:
   tags:
     - gitlab-runner
   allow_failure: false
-  variables:
-    APP: $CI_PROJECT_NAME
   script:
     - helm -n $NAMESPACE uninstall $APP
 
@@ -38,6 +37,7 @@ dev:
     name: development
     url: https://$APP_HOST
   variables:
+    <<: *variables
     NAMESPACE: dev
     APP_HOST: dev.$DOMAIN_NAME
   only:
@@ -50,6 +50,7 @@ stop-dev:
     name: development
     action: stop
   variables:
+    <<: *variables
     NAMESPACE: dev
   only:
     - dev
@@ -61,6 +62,7 @@ prod:
     name: production
     url: https://$APP_HOST
   variables:
+    <<: *variables
     NAMESPACE: dev
     APP_HOST: dev.$DOMAIN_NAME
   only:
@@ -73,6 +75,7 @@ stop-prod:
     name: production
     action: stop
   variables:
+    <<: *variables
     NAMESPACE: prod
   only:
     - main
