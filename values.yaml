@@ -313,7 +313,7 @@ proxy:
     # Ingress hostname
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    hostname: dev.seandefontaine.io
+    hostname: kong.seandefontaine.io
     # Map of ingress annotations.
     annotations: 
       konghq.com/strip-path: 'true'
@@ -511,8 +511,8 @@ ingressController:
 
   ingressClass: kong
   # annotations for IngressClass resource (Kubernetes 1.18+)
-  ingressClassAnnotations:
-    kubernetes.io/ingress.class: "gce-internal"
+  ingressClassAnnotations: {}
+    # kubernetes.io/ingress.class: "gce-internal"
 
   ## Define any volumes and mounts you want present in the ingress controller container
   ## Volumes are defined above in deployment.userDefinedVolumes
