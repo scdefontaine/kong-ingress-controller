@@ -308,7 +308,7 @@ proxy:
   # to expose Kong outside the k8s cluster.
   ingress:
     # Enable/disable exposure using ingress.
-    enabled: true
+    enabled: false
     ingressClassName: gcp
     # Ingress hostname
     # TLS secret name.
