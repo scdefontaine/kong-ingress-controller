@@ -21,7 +21,7 @@ before_script:
   script:
     - >
       helm upgrade -i -n $NAMESPACE -f values.yaml $APP kong/kong
-      --set ingressController.ingressClass=kong-dev
+      --set ingressController.ingressClass=$INGRESS_CLASS
       --set ingressController.watchNamspaces={$NAMESPACE}
       --set proxy.ingress.hostname=$APP_HOST
       --wait --debug
@@ -44,6 +44,7 @@ dev:
     <<: *variables
     NAMESPACE: dev
     APP_HOST: dev.$CLUSTER_DOMAIN
+    INGRESS_CLASS: kong-dev
   only:
     - dev
 
@@ -69,6 +70,7 @@ prod:
     <<: *variables
     NAMESPACE: dev
     APP_HOST: $CLUSTER_DOMAIN
+    INGRESS_CLASS: kong-prod
   only:
     - main
 
