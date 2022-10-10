@@ -321,7 +321,7 @@ proxy:
     # Ingress path.
     path: /
     # Each path in an Ingress is required to have a corresponding path type. (ImplementationSpecific/Exact/Prefix)
-    pathType: Prefix
+    pathType: ImplementationSpecific
 
   # Optionally specify a static load balancer IP.
   # loadBalancerIP:
