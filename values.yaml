@@ -308,8 +308,8 @@ proxy:
   # to expose Kong outside the k8s cluster.
   ingress:
     # Enable/disable exposure using ingress.
-    enabled: false
-    ingressClassName: gcp
+    enabled: true
+    ingressClassName: nginx
     # Ingress hostname
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
@@ -511,7 +511,8 @@ ingressController:
 
   ingressClass: kong
   # annotations for IngressClass resource (Kubernetes 1.18+)
-  ingressClassAnnotations: {}
+  ingressClassAnnotations:
+    kubernetes.io/ingress.class: "gce-internal"
 
   ## Define any volumes and mounts you want present in the ingress controller container
   ## Volumes are defined above in deployment.userDefinedVolumes
