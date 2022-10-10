@@ -1,0 +1,83 @@
+image: alpine/helm
+
+stages:
+  - dev
+  - stop-dev
+  - prod
+  - stop-prod
+
+.deploy: &deploy
+  tags:
+    - gitlab-runner
+  allow_failure: false
+  variables:
+    APP: $CI_PROJECT_NAME
+    DOMAIN_NAME: seandefontaine.io
+  script:
+    - >
+      helm upgrade -i $APP kong/kong -n $NAMESPACE -f values.yaml
+      --set ingressController.ingressClass=kong-dev
+      --set ingressController.watchNamspaces={$NAMESPACE}
+      --set proxy.ingress.hostname=$APP_HOST
+      --wait --debug
+
+.cleanup: &cleanup
+  when: manual
+  tags:
+    - gitlab-runner
+  allow_failure: false
+  variables:
+    APP: $CI_PROJECT_NAME
+  script:
+    - helm -n $NAMESPACE uninstall $APP
+
+dev:
+  <<: *deploy
+  stage: dev
+  environment:
+    name: development
+    url: https://$APP_HOST
+  variables:
+    NAMESPACE: dev
+    APP_HOST: dev.$DOMAIN_NAME
+  only:
+    - dev
+
+stop-dev:
+  <<: *cleanup
+  stage: stop-dev
+  environment:
+    name: development
+    action: stop
+  variables:
+    NAMESPACE: dev
+  only:
+    - dev
+
+prod:
+  <<: *deploy
+  stage: prod
+  environment:
+    name: production
+    url: https://$APP_HOST
+  variables:
+    NAMESPACE: dev
+    APP_HOST: dev.$DOMAIN_NAME
+  only:
+    - main
+
+stop-prod:
+  <<: *cleanup
+  stage: stop-prod
+  environment:
+    name: production
+    action: stop
+  variables:
+    NAMESPACE: prod
+  only:
+    - main
+
+
+
+    
+
