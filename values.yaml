@@ -313,7 +313,7 @@ proxy:
     # Ingress hostname
     # TLS secret name.
     # tls: kong-proxy.example.com-tls
-    hostname: kong.seandefontaine.io
+    hostname: 
     # Map of ingress annotations.
     annotations: 
       konghq.com/strip-path: 'true'
