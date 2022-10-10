@@ -6,6 +6,10 @@ stages:
   - prod
   - stop-prod
 
+before_script:
+  - helm repo add kong https://charts.konghq.com
+  - helm repo update
+
 .variables: &variables
   APP: $CI_PROJECT_NAME
   DOMAIN_NAME: seandefontaine.io
