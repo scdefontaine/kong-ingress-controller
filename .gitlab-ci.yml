@@ -1,10 +1,9 @@
 image: alpine/helm
 
 stages:
-  - dev
-  - stop-dev
-  - prod
-  - stop-prod
+  - deploy
+  - cleanup
+  - merge
 
 before_script:
   - helm repo add kong https://charts.konghq.com
@@ -12,9 +11,9 @@ before_script:
 
 .variables: &variables
   APP: $CI_PROJECT_NAME
-  # CLUSTER_DOMAIN: seandefontaine.io
 
 .deploy: &deploy
+  stage: deploy
   tags:
     - gitlab-runner
   allow_failure: false
@@ -36,7 +35,6 @@ before_script:
 
 dev:
   <<: *deploy
-  stage: dev
   environment:
     name: development
     url: https://$APP_HOST
@@ -48,9 +46,22 @@ dev:
   only:
     - dev
 
+prod:
+  <<: *deploy
+  environment:
+    name: production
+    url: https://$APP_HOST
+  variables:
+    <<: *variables
+    NAMESPACE: prod
+    APP_HOST: $CLUSTER_DOMAIN
+    INGRESS_CLASS: kong-prod
+  only:
+    - main
+
 stop-dev:
   <<: *cleanup
-  stage: stop-dev
+  stage: cleanup
   environment:
     name: development
     action: stop
@@ -60,23 +71,9 @@ stop-dev:
   only:
     - dev
 
-prod:
-  <<: *deploy
-  stage: prod
-  environment:
-    name: production
-    url: https://$APP_HOST
-  variables:
-    <<: *variables
-    NAMESPACE: dev
-    APP_HOST: $CLUSTER_DOMAIN
-    INGRESS_CLASS: kong-prod
-  only:
-    - main
-
 stop-prod:
   <<: *cleanup
-  stage: stop-prod
+  stage: cleanup
   environment:
     name: production
     action: stop
