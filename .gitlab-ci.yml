@@ -3,7 +3,7 @@ image: alpine/helm
 stages:
   - deploy
   - cleanup
-  - merge
+  # - merge
 
 before_script:
   - helm repo add kong https://charts.konghq.com
