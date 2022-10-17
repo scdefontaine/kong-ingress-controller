@@ -19,7 +19,7 @@ before_script:
   allow_failure: false
   script:
     - >
-      helm upgrade -i -n $NAMESPACE -f values.yaml $APP kong/kong
+      helm upgrade -i -n $NAMESPACE -f values.yaml $APP-$NAMESPACE kong/kong
       --set ingressController.ingressClass=$INGRESS_CLASS
       --set ingressController.watchNamspaces={$NAMESPACE}
       --set proxy.ingress.hostname=$APP_HOST
