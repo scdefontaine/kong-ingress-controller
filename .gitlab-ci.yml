@@ -1,0 +1,92 @@
+image: alpine/helm
+
+stages:
+  - dev
+  - stop-dev
+  - prod
+  - stop-prod
+
+before_script:
+  - helm repo add kong https://charts.konghq.com
+  - helm repo update
+
+.variables: &variables
+  APP: $CI_PROJECT_NAME
+  # CLUSTER_DOMAIN: seandefontaine.io
+
+.deploy: &deploy
+  tags:
+    - gitlab-runner
+  allow_failure: false
+  script:
+    - >
+      helm upgrade -i -n $NAMESPACE -f values.yaml $APP kong/kong
+      --set ingressController.ingressClass=$INGRESS_CLASS
+      --set ingressController.watchNamspaces={$NAMESPACE}
+      --set proxy.ingress.hostname=$APP_HOST
+      --wait --debug
+
+.cleanup: &cleanup
+  when: manual
+  tags:
+    - gitlab-runner
+  allow_failure: false
+  script:
+    - helm -n $NAMESPACE uninstall $APP
+
+dev:
+  <<: *deploy
+  stage: dev
+  environment:
+    name: development
+    url: https://$APP_HOST
+  variables:
+    <<: *variables
+    NAMESPACE: dev
+    APP_HOST: dev.$CLUSTER_DOMAIN
+    INGRESS_CLASS: kong-dev
+  only:
+    - dev
+
+stop-dev:
+  <<: *cleanup
+  stage: stop-dev
+  environment:
+    name: development
+    action: stop
+  variables:
+    <<: *variables
+    NAMESPACE: dev
+  only:
+    - dev
+
+prod:
+  <<: *deploy
+  stage: prod
+  environment:
+    name: production
+    url: https://$APP_HOST
+  variables:
+    <<: *variables
+    NAMESPACE: dev
+    APP_HOST: $CLUSTER_DOMAIN
+    INGRESS_CLASS: kong-prod
+  only:
+    - main
+
+stop-prod:
+  <<: *cleanup
+  stage: stop-prod
+  environment:
+    name: production
+    action: stop
+  variables:
+    <<: *variables
+    NAMESPACE: prod
+  only:
+    - main
+
+
+
+    
+
