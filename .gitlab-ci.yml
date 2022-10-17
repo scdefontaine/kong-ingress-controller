@@ -23,6 +23,7 @@ before_script:
       --set ingressController.ingressClass=$INGRESS_CLASS
       --set ingressController.watchNamspaces={$NAMESPACE}
       --set proxy.ingress.hostname=$APP_HOST
+      --set ingressController.installCRDs=$INSTALL_CRDS
       --wait --debug
 
 .cleanup: &cleanup
@@ -43,6 +44,7 @@ dev:
     NAMESPACE: dev
     APP_HOST: dev.$CLUSTER_DOMAIN
     INGRESS_CLASS: kong-dev
+    INSTALL_CRDS: "false"
   only:
     - dev
 
@@ -56,6 +58,7 @@ prod:
     NAMESPACE: prod
     APP_HOST: $CLUSTER_DOMAIN
     INGRESS_CLASS: kong-prod
+    INSTALL_CRDS: "false"
   only:
     - main
 
